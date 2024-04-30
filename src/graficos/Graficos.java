@@ -3,7 +3,6 @@ package graficos;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class Graficos extends Canvas {
@@ -49,13 +48,6 @@ public class Graficos extends Canvas {
         }
     }
 
-    public void drawRectangle(Rectangle rectangle, Color color) {
-        drawLine(rectangle.x, rectangle.y, rectangle.x + rectangle.width, rectangle.y, color);
-        drawLine(rectangle.x + rectangle.width, rectangle.y, rectangle.x + rectangle.width, rectangle.y + rectangle.height, color);
-        drawLine(rectangle.x + rectangle.width, rectangle.y + rectangle.height, rectangle.x, rectangle.y + rectangle.height, color);
-        drawLine(rectangle.x, rectangle.y + rectangle.height, rectangle.x, rectangle.y, color);
-    }
-
     public void drawRect(int x0, int y0, int x1, int y1, Color color) {
         drawLine(x0, y0, x1, y0, color);
         drawLine(x0, y1, x1, y1, color);
@@ -92,14 +84,34 @@ public class Graficos extends Canvas {
                 y1 += sy;
             }
         }
+        repaint();
     }
     
-    public void drawCircle(int x0, int y0, int x1, int y1, Color color) {
-        int RADIO = 100;
-        for (double t = 0; t <= 2 * Math.PI; t += 0.01) {
-            int x = (int) (x0 + RADIO * Math.sin(t));
-            int y = (int) (y0 + RADIO * Math.cos(t));
-            putPixel(x, y, color); // Dibujar un punto en la posición (x, y)
+    public void fillCircle(int x0, int y0, int RADIO, Color fillColor) {
+        for (int y = y0 - RADIO; y <= y0 + RADIO; y++) {
+            for (int x = x0 - RADIO; x <= x0 + RADIO; x++) {
+                if (Math.pow(x - x0, 2) + Math.pow(y - y0, 2) <= Math.pow(RADIO, 2)) {
+                    putPixel(x, y, fillColor);
+                }
+            }
+        }
+        repaint();
+    }
+    
+    public void drawCircle(int x0, int y0, int RADIO, Color color) {
+        for (int t = 0; t <= 45; t++) {
+            int x = (int) (RADIO * Math.sin(Math.toRadians(t)));
+            int y = (int) (RADIO * Math.cos(Math.toRadians(t)));
+
+            putPixel(x0 + x, y0 + y, color); 
+            putPixel(x0 + y, y0 + x, color);
+            putPixel(x0 + y, y0 - x, color); 
+            putPixel(x0 + x, y0 - y, color); 
+
+            putPixel(x0 - x, y0 - y, color); 
+            putPixel(x0 - y, y0 - x, color); 
+            putPixel(x0 - y, y0 + x, color);  
+            putPixel(x0 - x, y0 + y, color); 
         }
         repaint();
     }
