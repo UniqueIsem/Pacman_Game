@@ -1,5 +1,7 @@
 package graficos;
 
+import characters.Pacman;
+import componentes.Laberinto;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,6 +12,9 @@ public class Graficos extends Canvas {
     private final int WIDTH;
     private final int HEIGHT;
     private BufferedImage buffer;
+    
+    Laberinto laberinto = new Laberinto();
+    Pacman pacman = new Pacman();
 
     // Variables para la traslación
     private int translateX = 0;
@@ -204,5 +209,13 @@ public class Graficos extends Canvas {
 
     public void limpiarBuffer() {
         buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    }
+    
+    public void pacman() {
+        pacman.dibujar(this);
+    }
+    
+    public void maze() {
+        laberinto.dibujar(this);
     }
 }

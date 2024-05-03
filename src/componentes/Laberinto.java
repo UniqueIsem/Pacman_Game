@@ -16,6 +16,23 @@ public class Laberinto {
         this.laberinto = getLaberinto();
     }
 
+    public void dibujar(Graficos g) {
+        drawMaze(g);
+    }
+    
+    public void drawMaze(Graficos g) {
+        for (int i = 0; i < FILAS; i++) {
+            for (int j = 0; j < COLUMNAS; j++) {
+                if (laberinto[i][j] == 1) {
+                    int x = j * ANCHO_CELDA;
+                    int y = i * ALTO_CELDA;
+                    g.fillRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLUE);
+                    g.drawRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLACK);
+                }
+            }
+        }
+    }
+
     public int[][] getLaberinto() {
         int laberinto[][]
                 = {
@@ -38,25 +55,6 @@ public class Laberinto {
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
                 };
         return laberinto;
-    }
-
-    public void dibujar(Graficos graficos) {
-        drawBackground(width, height, graficos);
-        for (int i = 0; i < FILAS; i++) {
-            for (int j = 0; j < COLUMNAS; j++) {
-                if (laberinto[i][j] == 1) {
-                    int x = j * ANCHO_CELDA;
-                    int y = i * ALTO_CELDA;
-                    graficos.fillRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLUE);
-                    graficos.drawRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLACK);
-                }
-            }
-        }
-        System.out.println("fondo y laberinto dibujado");
-    }
-    
-    public void drawBackground(int width, int height, Graficos graficos) {
-        graficos.fillRect(0, 0, width, height, Color.BLACK);
     }
 
     public int getAncho() {
