@@ -7,17 +7,19 @@ import java.awt.image.BufferedImage;
 
 public class Pacman {
 
-    //Laberinto lab = new Laberinto();
     private int x = 435;
     private int y = 315;
     public boolean[] teclaPresionada = new boolean[4];
     private int pacmanSize = 15;
     private int vidas = 3;
-    private final int movimiento = 10;
+    private final int movimiento = 3;
     
     private BufferedImage buffer;
     private Graphics gBuffer;
 
+    //X: -55 Y: 255 LEFT
+    //X: 905 Y: 255 RIGHT
+    
     public Pacman(BufferedImage buffer) {
         this.buffer = buffer;
         this.gBuffer = buffer.createGraphics();

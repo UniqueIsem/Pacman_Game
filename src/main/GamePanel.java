@@ -1,5 +1,6 @@
 package main;
 
+import characters.Ghost;
 import characters.Pacman;
 import componentes.Laberinto;
 import graficos.Graficos;
@@ -21,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     Graficos graficos;
     Laberinto laberinto;
     Pacman pacman;
+    Ghost ghost;
 
     public GamePanel(int w, int h) {
         this.width = w;
@@ -33,12 +35,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         makeGraphics();
         makeMaze();
         makePacman();
+        makeGhosts();
 
+        // Hilo encargado del movimiento de pacman
         th = new Thread(this);
         th.start();
         
-        addKeyListener(this);
-
+        // Movimiento continuo de pacman
+        addKeyListener(this); 
         setFocusable(true);
         requestFocus();
     }
@@ -55,28 +59,33 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         pacman = new Pacman(buffer);
     }
 
+    private void makeGhosts() {
+        ghost = new Ghost(buffer);
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
         img = createImage(getWidth(), getHeight());
         gBuffer = img.getGraphics();
 
         laberinto.drawMaze(graficos);
+        laberinto.drawPoints(graficos);
 
         g.drawImage(buffer, 0, 0, this);
-    }
-
-    private void showComponents() {
-        System.out.println("show components");
     }
 
     @Override
     public void run() {
         while (true) {
+            //Dibujar pacman
             pacman.dibujarPacman(graficos);
             pacman.moverPacman();
+            //Dibujar fantasmas
+            ghost.dibujarFantasmas(graficos);
+            //Implementar metodo para mover fantasmas
             repaint();
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -10,8 +10,7 @@ public class Laberinto {
     private final int width = 915, height = 546;
     private final int FILAS = 17;
     private final int COLUMNAS = 29;
-    private final int ANCHO_CELDA = 30;
-    private final int ALTO_CELDA = 30;
+    private final int celdaSize = 30;
     private int[][] laberinto;
 
     private BufferedImage buffer;
@@ -28,46 +27,68 @@ public class Laberinto {
             for (int i = 0; i < FILAS; i++) {
                 for (int j = 0; j < COLUMNAS; j++) {
                     if (laberinto[i][j] == 1) {
-                        int x = j * ANCHO_CELDA;
-                        int y = i * ALTO_CELDA;
-                        g.fillRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLUE);
-                        g.drawRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLACK);
+                        int x = j * celdaSize;
+                        int y = i * celdaSize;
+                        g.fillRect(x, y, x + celdaSize, y + celdaSize, Color.BLUE);
+                        g.drawRect(x, y, x + celdaSize, y + celdaSize, Color.BLACK);
                     }
                 }
             }
         }
     }
 
+    public void drawPoints(Graficos g) {
+        if (buffer != null) {
+            for (int i = 0; i < FILAS; i++) {
+                for (int j = 0; j < COLUMNAS; j++) {
+                    if (laberinto[i][j] == 0) {
+                        int x = j * celdaSize + celdaSize / 2;
+                        int y = i * celdaSize + celdaSize / 2;
+                        int RADIO = celdaSize / 20;
+                        g.fillCircle(x, y, RADIO, Color.white);
+                    } else if (laberinto[i][j] == 2) {
+                        int x = j * celdaSize + celdaSize / 2;
+                        int y = i * celdaSize + celdaSize / 2;
+                        int RADIO = celdaSize / 10;
+                        g.fillCircle(x, y, RADIO, Color.white);
+                    }
+                }
+            }
+        }
+    }
+    
+    
+
     public int[][] getLaberinto() {
         int laberinto[][]
                 = {
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                    {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1},
                     {1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
                     {1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                     {1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1},
-                    {1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-                    {1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {1, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 1, 1, 1, 3, 1, 1, 1, 0, 1, 0, 2, 1, 0, 0, 0, 0, 0, 1},
+                    {1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 3, 3, 3, 3, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
-                    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                     {1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1},
                     {1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1},
                     {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
                     {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
-                    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                    {1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1},
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
                 };
         return laberinto;
     }
 
     public int getAncho() {
-        return COLUMNAS * ANCHO_CELDA;
+        return COLUMNAS * celdaSize;
     }
 
     public int getAlto() {
-        return FILAS * ALTO_CELDA;
+        return FILAS * celdaSize;
     }
 
     public int getFilas() {
@@ -79,10 +100,10 @@ public class Laberinto {
     }
 
     public int getAnchoCelda() {
-        return ANCHO_CELDA;
+        return celdaSize;
     }
 
     public int getAltoCelda() {
-        return ALTO_CELDA;
+        return celdaSize;
     }
 }

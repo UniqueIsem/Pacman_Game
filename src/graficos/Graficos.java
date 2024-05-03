@@ -17,8 +17,6 @@ public class Graficos extends Canvas {
     private int translateY = 0;
 
     public Graficos(int width, int height, BufferedImage buffer) {
-        //setSize(width, height);
-
         this.WIDTH = width;
         this.HEIGHT = height;
         this.buffer = buffer;
