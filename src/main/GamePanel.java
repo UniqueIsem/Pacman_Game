@@ -56,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     private void makePacman() {
-        pacman = new Pacman(buffer);
+        pacman = new Pacman(buffer, laberinto);
     }
 
     private void makeGhosts() {

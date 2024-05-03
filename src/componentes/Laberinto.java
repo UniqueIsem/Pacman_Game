@@ -11,7 +11,7 @@ public class Laberinto {
     private final int FILAS = 17;
     private final int COLUMNAS = 29;
     private final int celdaSize = 30;
-    private int[][] laberinto;
+    public int[][] laberinto;
 
     private BufferedImage buffer;
     private Graphics gBuffer;
@@ -81,6 +81,10 @@ public class Laberinto {
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
                 };
         return laberinto;
+    }
+    
+    public boolean hayColision(int fila, int columna) {
+        return laberinto[fila][columna] == 1;
     }
 
     public int getAncho() {
