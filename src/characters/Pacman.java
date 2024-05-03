@@ -2,7 +2,8 @@ package characters;
 
 import graficos.Graficos;
 import java.awt.Color;
-import java.awt.Image;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class Pacman {
 
@@ -12,30 +13,38 @@ public class Pacman {
     public boolean[] teclaPresionada = new boolean[4];
     private int pacmanSize = 15;
     private int vidas = 3;
-    private final int movimiento = 3;
-    Image temp;
+    private final int movimiento = 10;
+    
+    private BufferedImage buffer;
+    private Graphics gBuffer;
 
-    public void dibujar(Graficos g) {
-        dibujarPacman(g);
+    public Pacman(BufferedImage buffer) {
+        this.buffer = buffer;
+        this.gBuffer = buffer.createGraphics();
     }
-
+    
     public void dibujarPacman(Graficos g) {
+        g.limpiarBuffer();
         g.fillCircle(x, y, pacmanSize, Color.yellow);
-        g.drawCircle(x, y, pacmanSize, Color.black);        
+        g.drawCircle(x, y, pacmanSize, Color.black);
     }
     
     public void moverPacman() {
         if (teclaPresionada[0]) {
             y -= movimiento;
+            System.out.println("X: " + x + " Y: " + y + " UP");
         }
         if (teclaPresionada[1]) {
             x -= movimiento;
+            System.out.println("X: " + x + " Y: " + y + " LEFT");
         }
         if (teclaPresionada[2]) {
             y += movimiento;
+            System.out.println("X: " + x + " Y: " + y + " DOWN");
         }
         if (teclaPresionada[3]) {
             x += movimiento;
+            System.out.println("X: " + x + " Y: " + y + " RIGHT");
         }
     }
 }

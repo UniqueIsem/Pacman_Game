@@ -1,7 +1,5 @@
 package graficos;
 
-import characters.Pacman;
-import componentes.Laberinto;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,19 +10,19 @@ public class Graficos extends Canvas {
     private final int WIDTH;
     private final int HEIGHT;
     private BufferedImage buffer;
-    
-    Laberinto laberinto = new Laberinto();
-    Pacman pacman = new Pacman();
+    private Graphics gBuffer;
 
     // Variables para la traslación
     private int translateX = 0;
     private int translateY = 0;
 
-    public Graficos(int width, int height) {
-        setSize(width, height);
+    public Graficos(int width, int height, BufferedImage buffer) {
+        //setSize(width, height);
 
         this.WIDTH = width;
         this.HEIGHT = height;
+        this.buffer = buffer;
+        this.gBuffer = buffer.createGraphics();
         buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
@@ -91,7 +89,7 @@ public class Graficos extends Canvas {
         }
         repaint();
     }
-    
+
     public void fillCircle(int x0, int y0, int RADIO, Color fillColor) {
         for (int y = y0 - RADIO; y <= y0 + RADIO; y++) {
             for (int x = x0 - RADIO; x <= x0 + RADIO; x++) {
@@ -102,21 +100,21 @@ public class Graficos extends Canvas {
         }
         repaint();
     }
-    
+
     public void drawCircle(int x0, int y0, int RADIO, Color color) {
         for (int t = 0; t <= 45; t++) {
             int x = (int) (RADIO * Math.sin(Math.toRadians(t)));
             int y = (int) (RADIO * Math.cos(Math.toRadians(t)));
 
-            putPixel(x0 + x, y0 + y, color); 
+            putPixel(x0 + x, y0 + y, color);
             putPixel(x0 + y, y0 + x, color);
-            putPixel(x0 + y, y0 - x, color); 
-            putPixel(x0 + x, y0 - y, color); 
+            putPixel(x0 + y, y0 - x, color);
+            putPixel(x0 + x, y0 - y, color);
 
-            putPixel(x0 - x, y0 - y, color); 
-            putPixel(x0 - y, y0 - x, color); 
-            putPixel(x0 - y, y0 + x, color);  
-            putPixel(x0 - x, y0 + y, color); 
+            putPixel(x0 - x, y0 - y, color);
+            putPixel(x0 - y, y0 - x, color);
+            putPixel(x0 - y, y0 + x, color);
+            putPixel(x0 - x, y0 + y, color);
         }
         repaint();
     }
@@ -208,14 +206,9 @@ public class Graficos extends Canvas {
     }
 
     public void limpiarBuffer() {
-        buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = buffer.getGraphics();
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
     }
-    
-    public void pacman() {
-        pacman.dibujar(this);
-    }
-    
-    public void maze() {
-        laberinto.dibujar(this);
-    }
+
 }

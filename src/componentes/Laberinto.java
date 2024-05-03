@@ -2,6 +2,8 @@ package componentes;
 
 import graficos.Graficos;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class Laberinto {
 
@@ -12,22 +14,25 @@ public class Laberinto {
     private final int ALTO_CELDA = 30;
     private int[][] laberinto;
 
-    public Laberinto() {
+    private BufferedImage buffer;
+    private Graphics gBuffer;
+
+    public Laberinto(BufferedImage buffer) {
         this.laberinto = getLaberinto();
+        this.buffer = buffer;
+        this.gBuffer = buffer.createGraphics();
     }
 
-    public void dibujar(Graficos g) {
-        drawMaze(g);
-    }
-    
     public void drawMaze(Graficos g) {
-        for (int i = 0; i < FILAS; i++) {
-            for (int j = 0; j < COLUMNAS; j++) {
-                if (laberinto[i][j] == 1) {
-                    int x = j * ANCHO_CELDA;
-                    int y = i * ALTO_CELDA;
-                    g.fillRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLUE);
-                    g.drawRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLACK);
+        if (buffer != null) {
+            for (int i = 0; i < FILAS; i++) {
+                for (int j = 0; j < COLUMNAS; j++) {
+                    if (laberinto[i][j] == 1) {
+                        int x = j * ANCHO_CELDA;
+                        int y = i * ALTO_CELDA;
+                        g.fillRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLUE);
+                        g.drawRect(x, y, x + ANCHO_CELDA, y + ALTO_CELDA, Color.BLACK);
+                    }
                 }
             }
         }
