@@ -4,6 +4,7 @@ import characters.Ghost;
 import characters.Pacman;
 import componentes.Laberinto;
 import graficos.Graficos;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -11,13 +12,15 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements KeyListener {
 
     private final int width, height;
     public BufferedImage buffer;
     Graphics gBuffer;
-    Thread th; //hilo encargado de repintar
     Image img;
+    
+    Thread thPacman;
+    Thread thGhost1, thGhost2, thGhost3, thGhost4; 
 
     Graficos graficos;
     Laberinto laberinto;
@@ -35,14 +38,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         makeGraphics();
         makeMaze();
         makePacman();
-        makeGhosts();
+        //makeGhosts();
 
-        // Hilo encargado del movimiento de pacman
-        th = new Thread(this);
-        th.start();
-        
+        iniciarHilos();
+
         // Movimiento continuo de pacman
-        addKeyListener(this); 
+        addKeyListener(this);
         setFocusable(true);
         requestFocus();
     }
@@ -60,7 +61,28 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     private void makeGhosts() {
-        ghost = new Ghost(buffer);
+        Color[] ghostColors = new Color[4];
+        ghostColors[0] = Color.red;
+        ghostColors[1] = Color.orange;
+        ghostColors[2] = Color.pink;
+        ghostColors[3] = Color.cyan;
+        for (int i = 0; i < 3; i++) {
+            //ghost = new Ghost(buffer, ghostColors[i]);
+        }
+    }
+
+    private synchronized void iniciarHilos() {
+        //Encarcados de creacion y movimiento (pacman y fantasmas)
+        thPacman = new Thread(this::runPacman);
+        thGhost1 = new Thread(this::runGhost1);
+        thGhost2 = new Thread(this::runGhost2);
+        thGhost3 = new Thread(this::runGhost3);
+        thGhost4 = new Thread(this::runGhost4);
+        thPacman.start();
+        thGhost1.start();
+        thGhost2.start();
+        thGhost3.start();
+        thGhost4.start();
     }
     
     @Override
@@ -75,15 +97,67 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         g.drawImage(buffer, 0, 0, this);
     }
 
-    @Override
-    public void run() {
+    public void runPacman() {
         while (true) {
             //Dibujar pacman
             pacman.dibujarPacman(graficos);
             pacman.moverPacman();
-            //Dibujar fantasmas
-            ghost.dibujarFantasmas(graficos);
-            //Implementar metodo para mover fantasmas
+            repaint();
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost1() {
+        ghost = new Ghost(buffer);
+        while (true) {
+            ghost.dibujarFantasma(graficos, Color.red);
+            ghost.moverFantasma();
+            repaint();
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost2() {
+        ghost = new Ghost(buffer);
+        while (true) {
+            ghost.dibujarFantasma(graficos, Color.orange);
+            ghost.moverFantasma();
+            repaint();
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost3() {
+        ghost = new Ghost(buffer);
+        while (true) {
+            ghost.dibujarFantasma(graficos, Color.pink);
+            ghost.moverFantasma();
+            repaint();
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost4() {
+        ghost = new Ghost(buffer);
+        while (true) {
+            ghost.dibujarFantasma(graficos, Color.cyan);
+            ghost.moverFantasma();
             repaint();
             try {
                 Thread.sleep(30);
@@ -94,7 +168,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
