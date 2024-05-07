@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void makeBoard() {
-        tablero = new Tablero(buffer);
+        tablero = new Tablero(buffer, graficos, pacman);
     }
 
     private void makePacman() {
@@ -75,15 +75,15 @@ public class GamePanel extends JPanel implements KeyListener {
         thPacman = new Thread(this::runPacman);
         thCambioDireccion = new Thread(this::cambioDireccion);
         thGhost1 = new Thread(this::runGhost1);
-        thGhost2 = new Thread(this::runGhost2);
-        thGhost3 = new Thread(this::runGhost3);
-        thGhost4 = new Thread(this::runGhost4);
+//        thGhost2 = new Thread(this::runGhost2);
+//        thGhost3 = new Thread(this::runGhost3);
+//        thGhost4 = new Thread(this::runGhost4);
         thPacman.start();
         thCambioDireccion.start();
         thGhost1.start();
-        thGhost2.start();
-        thGhost3.start();
-        thGhost4.start();
+//        thGhost2.start();
+//        thGhost3.start();
+//        thGhost4.start();
     }
 
     @Override
@@ -94,6 +94,7 @@ public class GamePanel extends JPanel implements KeyListener {
         //Repinta comonentes del laberinto y puntos en el mapa
         laberinto.drawMaze(graficos);
         laberinto.drawPoints(graficos, pacman);
+        setGameTitle();
         
         g.drawImage(buffer, 0, 0, this);
     }
@@ -113,6 +114,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void cambioDireccion() {
+        // Ghost direction changes in 500ms
         while (true) {
             ghost.cambioDeDireccion();
             try {
@@ -124,7 +126,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void runGhost1() {
-        ghost = new Ghost(buffer);
+        //ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.red);
             ghost.moverFantasma(laberinto);
@@ -138,7 +140,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void runGhost2() {
-        ghost = new Ghost(buffer);
+        //ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.orange);
             ghost.moverFantasma(laberinto);
@@ -152,7 +154,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void runGhost3() {
-        ghost = new Ghost(buffer);
+        //ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.pink);
             ghost.moverFantasma(laberinto);
@@ -178,10 +180,19 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
+    
+    public void setGameTitle() {
+        tablero.printPacmanLetters(tablero.printP(), 350, 515);
+        tablero.printPacmanLetters(tablero.printA(), 380, 515);
+        tablero.printPacmanLetters(tablero.printC(), 410, 515);
+        tablero.printPacmanLetters(tablero.printM(), 440, 515);
+        tablero.printPacmanLetters(tablero.printA(), 470, 515);
+        tablero.printPacmanLetters(tablero.printN(), 500, 515);
+        repaint();
     }
+    
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -217,6 +228,5 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-    }
+    public void keyReleased(KeyEvent e) {}
 }

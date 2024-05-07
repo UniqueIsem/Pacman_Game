@@ -57,15 +57,14 @@ public class Ghost {
     public void cambioDeDireccion() {
         // Cambio de direccion del fantasma de manera aleatorea
         direccion = random.nextInt(4);
-        System.out.println("MESSAGE: ghost change direction");
+        //System.out.println("MESSAGE: ghost change direction: " + direccion);
     }
 
     public void dibujarFantasma(Graficos g, Color c) {
         //BODY AND EYES
         g.limpiarBuffer();
         //g.fillRect(x - 15, y - 12, x + 15, y + 12, c);
-        g.fillCircle(x, y, 13, c);
-        g.drawCircle(x, y, 13, Color.black);
+        g.fillCircle(x, y, 15, c);
         g.fillCircle(x - 8, y, 5, Color.white);
         g.fillCircle(x - 6, y, 3, Color.black);
         g.fillCircle(x + 8, y, 5, Color.white);
