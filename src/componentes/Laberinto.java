@@ -1,5 +1,6 @@
 package componentes;
 
+import characters.Pacman;
 import graficos.Graficos;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -37,7 +38,7 @@ public class Laberinto {
         }
     }
 
-    public void drawPoints(Graficos g) {
+    public void drawPoints(Graficos g, Pacman pacman) {
         if (buffer != null) {
             for (int i = 0; i < FILAS; i++) {
                 for (int j = 0; j < COLUMNAS; j++) {
@@ -54,6 +55,12 @@ public class Laberinto {
                     }
                 }
             }
+        }
+    }
+    
+    public void comerPunto(int fila, int columna){
+        if (laberinto[fila][columna] == 0 || laberinto[fila][columna] == 2) {
+            laberinto[fila][columna] = 3;
         }
     }
     
@@ -103,11 +110,7 @@ public class Laberinto {
         return COLUMNAS;
     }
 
-    public int getAnchoCelda() {
-        return celdaSize;
-    }
-
-    public int getAltoCelda() {
+    public int getCeldaSize() {
         return celdaSize;
     }
 }

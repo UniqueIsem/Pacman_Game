@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private final int width, height;
     public BufferedImage buffer;
     Graphics gBuffer;
-    Thread th;
+    Thread th; //hilo encargado de repintar
     Image img;
 
     Graficos graficos;
@@ -68,8 +68,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         img = createImage(getWidth(), getHeight());
         gBuffer = img.getGraphics();
 
+        //Repinta comonentes del laberinto y puntos en el mapa
         laberinto.drawMaze(graficos);
-        laberinto.drawPoints(graficos);
+        laberinto.drawPoints(graficos, pacman);
 
         g.drawImage(buffer, 0, 0, this);
     }
@@ -85,7 +86,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             //Implementar metodo para mover fantasmas
             repaint();
             try {
-                Thread.sleep(10);
+                Thread.sleep(30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -93,8 +94,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {

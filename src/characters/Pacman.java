@@ -3,7 +3,6 @@ package characters;
 import componentes.Laberinto;
 import graficos.Graficos;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Pacman {
@@ -11,20 +10,16 @@ public class Pacman {
     private int x = 435;
     private int y = 315;
     public boolean[] teclaPresionada = new boolean[4];
-    private int pacmanSize = 15;
+    private int pacmanSize = 13;
     private int vidas = 3;
     private final int movimiento = 3;
 
-    private BufferedImage buffer;
-    private Graphics gBuffer;
     Laberinto laberinto;
 
     //coordenadas para teletransportacion
     //X: -55 Y: 255 LEFT
     //X: 905 Y: 255 RIGHT
     public Pacman(BufferedImage buffer, Laberinto laberinto) {
-        this.buffer = buffer;
-        this.gBuffer = buffer.createGraphics();
         this.laberinto = laberinto;
     }
 
@@ -36,32 +31,54 @@ public class Pacman {
 
     public void moverPacman() {
         int[][] maze = laberinto.getLaberinto();
-        int filaPacman = y / laberinto.getAltoCelda(); // Calcula la fila del Pacman
-        int columnaPacman = x / laberinto.getAnchoCelda();
+        int filaPacman = (y + pacmanSize + 1 / 2) / laberinto.getCeldaSize();
+        int columnaPacman = (x + pacmanSize + 1 / 2) / laberinto.getCeldaSize();
 
         if (teclaPresionada[0] && filaPacman > 0) { // UP
             if (maze[filaPacman - 1][columnaPacman] != 1) { // Verifica la colisión
                 y -= movimiento;
+                System.out.println("X: " + x + " Y: " + y + " UP ");
             }
-            System.out.println("X: " + x + " Y: " + y + " UP ");
-        }
-        if (teclaPresionada[1] && columnaPacman > 0) { // LEFT
+        } else if (teclaPresionada[1] && columnaPacman > 0) { // LEFT
             if (maze[filaPacman][columnaPacman - 1] != 1) { // Verifica la colisión
                 x -= movimiento;
+                System.out.println("X: " + x + " Y: " + y + " LEFT");
             }
-            System.out.println("X: " + x + " Y: " + y + " LEFT");
-        }
-        if (teclaPresionada[2] && filaPacman < laberinto.getFilas() - 1) { // DOWN
-            if (maze[filaPacman + 1][columnaPacman] != 1) { // Verifica la colisión
+        } else if (teclaPresionada[2] && filaPacman < laberinto.getFilas() - 1) { // DOWN
+            if (maze[filaPacman][columnaPacman] != 1) { // Verifica la colisión
                 y += movimiento;
+                System.out.println("X: " + x + " Y: " + y + " DOWN");
             }
-            System.out.println("X: " + x + " Y: " + y + " DOWN");
-        }
-        if (teclaPresionada[3] && columnaPacman < laberinto.getColumnas() - 1) { // RIGHT
-            if (maze[filaPacman][columnaPacman + 1] != 1) { // Verifica la colisión
+        } else if (teclaPresionada[3] && columnaPacman < laberinto.getColumnas() - 1) { // RIGHT
+            if (maze[filaPacman][columnaPacman] != 1) { // Verifica la colisión
                 x += movimiento;
+                System.out.println("X: " + x + " Y: " + y + " RIGHT");
             }
-            System.out.println("X: " + x + " Y: " + y + " RIGHT");
         }
+
+        if (x == 15) {
+            if (maze[filaPacman][columnaPacman - 1] != 1) {
+                x -= movimiento;
+                System.out.println("TELETRANSPORTACION IZQUIERDA!!!");
+            }
+        } else if (x == 828 && y == 255) {
+            if (maze[filaPacman][columnaPacman] != 1) {
+                x += movimiento;
+                System.out.println("TELETRANSPORTACION DERECHA!!!");
+            }
+        }
+
+        //Verifica si está sobre un punto para comerlo
+        if (maze[filaPacman][columnaPacman] == 0 || maze[filaPacman][columnaPacman] == 2) {
+            laberinto.comerPunto(filaPacman, columnaPacman);
+        }
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }
