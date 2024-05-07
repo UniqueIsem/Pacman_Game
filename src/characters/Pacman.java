@@ -24,7 +24,7 @@ public class Pacman {
     }
 
     public void dibujarPacman(Graficos g) {
-        g.limpiarBuffer();
+        //g.limpiarBuffer();
         g.fillCircle(x, y, pacmanSize, Color.yellow);
         g.drawCircle(x, y, pacmanSize, Color.black);
     }

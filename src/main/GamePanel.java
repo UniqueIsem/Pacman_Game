@@ -3,6 +3,7 @@ package main;
 import characters.Ghost;
 import characters.Pacman;
 import componentes.Laberinto;
+import componentes.Tablero;
 import graficos.Graficos;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,25 +19,30 @@ public class GamePanel extends JPanel implements KeyListener {
     public BufferedImage buffer;
     Graphics gBuffer;
     Image img;
-    
+
+    private int ghostMov = 80;
+
     Thread thPacman;
-    Thread thGhost1, thGhost2, thGhost3, thGhost4; 
+    Thread thCambioDireccion;
+    Thread thGhost1, thGhost2, thGhost3, thGhost4;
 
     Graficos graficos;
     Laberinto laberinto;
+    Tablero tablero;
     Pacman pacman;
     Ghost ghost;
 
     public GamePanel(int w, int h) {
         this.width = w;
         this.height = h;
-
         if (buffer == null) {
             buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
+        this.ghost = new Ghost(buffer);
 
         makeGraphics();
         makeMaze();
+        makeBoard();
         makePacman();
         //makeGhosts();
 
@@ -56,35 +62,30 @@ public class GamePanel extends JPanel implements KeyListener {
         laberinto = new Laberinto(buffer);
     }
 
-    private void makePacman() {
-        pacman = new Pacman(buffer, laberinto);
+    private void makeBoard() {
+        tablero = new Tablero(buffer);
     }
 
-    private void makeGhosts() {
-        Color[] ghostColors = new Color[4];
-        ghostColors[0] = Color.red;
-        ghostColors[1] = Color.orange;
-        ghostColors[2] = Color.pink;
-        ghostColors[3] = Color.cyan;
-        for (int i = 0; i < 3; i++) {
-            //ghost = new Ghost(buffer, ghostColors[i]);
-        }
+    private void makePacman() {
+        pacman = new Pacman(buffer, laberinto);
     }
 
     private synchronized void iniciarHilos() {
         //Encarcados de creacion y movimiento (pacman y fantasmas)
         thPacman = new Thread(this::runPacman);
+        thCambioDireccion = new Thread(this::cambioDireccion);
         thGhost1 = new Thread(this::runGhost1);
         thGhost2 = new Thread(this::runGhost2);
         thGhost3 = new Thread(this::runGhost3);
         thGhost4 = new Thread(this::runGhost4);
         thPacman.start();
+        thCambioDireccion.start();
         thGhost1.start();
         thGhost2.start();
         thGhost3.start();
         thGhost4.start();
     }
-    
+
     @Override
     public void paintComponent(Graphics g) {
         img = createImage(getWidth(), getHeight());
@@ -93,7 +94,7 @@ public class GamePanel extends JPanel implements KeyListener {
         //Repinta comonentes del laberinto y puntos en el mapa
         laberinto.drawMaze(graficos);
         laberinto.drawPoints(graficos, pacman);
-
+        
         g.drawImage(buffer, 0, 0, this);
     }
 
@@ -110,57 +111,68 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-    
+
+    public void cambioDireccion() {
+        while (true) {
+            ghost.cambioDeDireccion();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void runGhost1() {
         ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.red);
-            ghost.moverFantasma();
+            ghost.moverFantasma(laberinto);
             repaint();
             try {
-                Thread.sleep(30);
+                Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     public void runGhost2() {
         ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.orange);
-            ghost.moverFantasma();
+            ghost.moverFantasma(laberinto);
             repaint();
             try {
-                Thread.sleep(30);
+                Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     public void runGhost3() {
         ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.pink);
-            ghost.moverFantasma();
+            ghost.moverFantasma(laberinto);
             repaint();
             try {
-                Thread.sleep(30);
+                Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     public void runGhost4() {
         ghost = new Ghost(buffer);
         while (true) {
             ghost.dibujarFantasma(graficos, Color.cyan);
-            ghost.moverFantasma();
+            ghost.moverFantasma(laberinto);
             repaint();
             try {
-                Thread.sleep(30);
+                Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
