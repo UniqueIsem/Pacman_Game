@@ -137,12 +137,13 @@ public final class GamePanel extends JPanel implements KeyListener {
                 gameOver = false;
             }
             try {
+                Thread.sleep(gameOverMessage);
                 if (gameOver) {
                     pacman.setVidas(3);
                     pacman.detenerPacman();
-                    System.out.println("sleep game over");
+                    //pacman
+                    //laberinto.drawPoints(graficos, pacman);
                 }
-                Thread.sleep(gameOverMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
