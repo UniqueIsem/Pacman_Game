@@ -3,8 +3,11 @@ package characters;
 import componentes.Laberinto;
 import graficos.Graficos;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import javax.swing.Timer;
 
 public class Ghost {
 
@@ -13,6 +16,7 @@ public class Ghost {
     private final int ghostSize = 13;
     private final int movimiento = 2;
     private boolean detenido = false;
+    private final int tiempoDeReaccionDetenido = 10;
     Random random = new Random();
     int direccion;
 
@@ -104,10 +108,26 @@ public class Ghost {
 
     public void detenerGhost() {
         if (!detenido) {
-            detenido = true;
-        } else {
-            detenido = false;
+            Timer timer = new Timer(tiempoDeReaccionDetenido, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //Establece la variable para que se detenga
+                    detenido = true;
+                    Timer timerReanudar = new Timer(0, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            detenido = false;
+                        }
+                    });
+                    timerReanudar.setInitialDelay(2000); // Espera 2000 milisegundos antes de comenzar
+                    timerReanudar.setRepeats(false); // No se repite
+                    timerReanudar.start();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
         }
+
     }
 
     public void reiniciarPosicion() {

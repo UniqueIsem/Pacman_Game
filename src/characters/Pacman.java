@@ -143,8 +143,8 @@ public class Pacman {
 
     public boolean isGameOver() {
         if (vidas == 0) {
-            reiniciarPosicion();
-            ghost.reiniciarPosicion();
+            detenerPacman();
+            ghost.detenerGhost();
             return true;
         }
         return false;

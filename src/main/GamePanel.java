@@ -23,7 +23,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     private final int pacmanMov = 10;
     private final int ghostMov = 10;
     private final int cambioDireccion = 3000;
-    private final int gameOverMessage = 100;
+    private final int gameOverMessage = 2000;
     private boolean gameOver = false;
 
     Thread thPacman;
@@ -137,12 +137,12 @@ public final class GamePanel extends JPanel implements KeyListener {
                 gameOver = false;
             }
             try {
-                Thread.sleep(gameOverMessage);
                 if (gameOver) {
                     pacman.setVidas(3);
-                    pacman.detenerPacman();
-                    ghost.detenerGhost();
+                    pacman.reiniciarPosicion();
+                    ghost.reiniciarPosicion();
                 }
+                Thread.sleep(gameOverMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -209,7 +209,7 @@ public final class GamePanel extends JPanel implements KeyListener {
         } else {
             ghost.dibujarFantasma(graficos, true);
         }
-        
+
     }
 
     public void printGameOver() {
