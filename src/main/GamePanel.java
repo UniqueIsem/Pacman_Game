@@ -13,7 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements KeyListener {
+public final class GamePanel extends JPanel implements KeyListener {
 
     private final int width, height;
     public BufferedImage buffer;
@@ -40,11 +40,11 @@ public class GamePanel extends JPanel implements KeyListener {
         }
         this.ghost = new Ghost(buffer);
 
-        makeGraphics();
+        //Inicializacion de objetos
+        makeGraficos();
         makeMaze();
         makeBoard();
         makePacman();
-        //makeGhosts();
 
         iniciarHilos();
 
@@ -54,30 +54,33 @@ public class GamePanel extends JPanel implements KeyListener {
         requestFocus();
     }
 
-    private void makeGraphics() {
-        graficos = new Graficos(width, height, buffer);
+    public void makeGraficos() {
+        graficos = new Graficos(width, height, buffer, this);
     }
 
-    private void makeMaze() {
+    public void makeMaze() {
         laberinto = new Laberinto(buffer);
     }
 
-    private void makeBoard() {
+    public void makeBoard() {
         tablero = new Tablero(buffer, graficos, pacman);
     }
 
-    private void makePacman() {
+    public void makePacman() {
         pacman = new Pacman(buffer, laberinto);
     }
 
     private synchronized void iniciarHilos() {
-        //Encarcados de creacion y movimiento (pacman y fantasmas)
+        //Encarcados de movimiento de pacman
         thPacman = new Thread(this::runPacman);
+        //Encargado de cambiar la direccion de los fantasmas cada 4 segundos
         thCambioDireccion = new Thread(this::cambioDireccion);
+        //Encargado de movimiento de fantasma
         thGhost1 = new Thread(this::runGhost1);
 //        thGhost2 = new Thread(this::runGhost2);
 //        thGhost3 = new Thread(this::runGhost3);
 //        thGhost4 = new Thread(this::runGhost4);
+
         thPacman.start();
         thCambioDireccion.start();
         thGhost1.start();
@@ -91,10 +94,9 @@ public class GamePanel extends JPanel implements KeyListener {
         img = createImage(getWidth(), getHeight());
         gBuffer = img.getGraphics();
 
-        //Repinta comonentes del laberinto y puntos en el mapa
-        laberinto.drawMaze(graficos);
-        laberinto.drawPoints(graficos, pacman);
-        setGameTitle();
+        //Pinta el mapa
+        drawBackground();
+        drawCharacters();
         
         g.drawImage(buffer, 0, 0, this);
     }
@@ -102,11 +104,24 @@ public class GamePanel extends JPanel implements KeyListener {
     public void runPacman() {
         while (true) {
             //Dibujar pacman
-            pacman.dibujarPacman(graficos);
+            //pacman.dibujarPacman(graficos);
             pacman.moverPacman();
-            repaint();
             try {
                 Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public void runGhost1() {
+        while (true) {
+            //Dibujar fantasma
+            //ghost.dibujarFantasma(graficos, Color.red);
+            ghost.moverFantasma(laberinto);
+            try {
+                Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -116,6 +131,7 @@ public class GamePanel extends JPanel implements KeyListener {
     public void cambioDireccion() {
         // Ghost direction changes in 500ms
         while (true) {
+            //ghost.dibujarFantasma(graficos, Color.red);
             ghost.cambioDeDireccion();
             try {
                 Thread.sleep(500);
@@ -124,75 +140,51 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-
-    public void runGhost1() {
-        //ghost = new Ghost(buffer);
-        while (true) {
-            ghost.dibujarFantasma(graficos, Color.red);
-            ghost.moverFantasma(laberinto);
-            repaint();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void runGhost2() {
-        //ghost = new Ghost(buffer);
-        while (true) {
-            ghost.dibujarFantasma(graficos, Color.orange);
-            ghost.moverFantasma(laberinto);
-            repaint();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void runGhost3() {
-        //ghost = new Ghost(buffer);
-        while (true) {
-            ghost.dibujarFantasma(graficos, Color.pink);
-            ghost.moverFantasma(laberinto);
-            repaint();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void runGhost4() {
-        ghost = new Ghost(buffer);
-        while (true) {
-            ghost.dibujarFantasma(graficos, Color.cyan);
-            ghost.moverFantasma(laberinto);
-            repaint();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    
+    public void drawBackground() {
+        laberinto.drawMaze(graficos);
+        laberinto.drawPoints(graficos, pacman);
+        drawBoard();
     }
     
-    public void setGameTitle() {
-        tablero.printPacmanLetters(tablero.printP(), 350, 515);
-        tablero.printPacmanLetters(tablero.printA(), 380, 515);
-        tablero.printPacmanLetters(tablero.printC(), 410, 515);
-        tablero.printPacmanLetters(tablero.printM(), 440, 515);
-        tablero.printPacmanLetters(tablero.printA(), 470, 515);
-        tablero.printPacmanLetters(tablero.printN(), 500, 515);
+    public void drawBoard() {
+        printGameTitle();
+        printCherry();
+        printVidas();
+    }
+
+    public void printGameTitle() {
+        tablero.printPacmanLetter(tablero.printP(), 350, 515);
+        tablero.printPacmanLetter(tablero.printA(), 380, 515);
+        tablero.printPacmanLetter(tablero.printC(), 410, 515);
+        tablero.printPacmanLetter(tablero.printM(), 440, 515);
+        tablero.printPacmanLetter(tablero.printA(), 470, 515);
+        tablero.printPacmanLetter(tablero.printN(), 500, 515);
         repaint();
+    }
+
+    public void printCherry() {
+        tablero.drawCherry(800, 530);
+        tablero.drawCherry(750, 530);
+    }
+
+    public void printVidas() {
+        int posX = 50;
+        for (int i = 0; i < pacman.getVidas(); i++) {
+            tablero.drawVidas(posX, 530);
+            posX += 50;
+        }
+    }
+
+    public void drawCharacters() {
+        pacman.dibujarPacman(graficos);
+        ghost.dibujarFantasma(graficos, Color.red);
+
     }
     
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -228,5 +220,6 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 }

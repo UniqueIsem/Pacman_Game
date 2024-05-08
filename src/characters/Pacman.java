@@ -73,6 +73,10 @@ public class Pacman {
         }
     }
 
+    public int getVidas() {
+        return vidas;
+    }
+
     public int getX() {
         return x;
     }

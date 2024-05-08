@@ -13,8 +13,6 @@ public class Tablero {
     private int MATRIZ = 5;
     private int pixelSizeTitle = 5;
     private int pixelSizeGameover = 10;
-    private int vidas;
-    Pacman pacman;
 
     private BufferedImage buffer;
     private Graphics gBuffer;
@@ -23,11 +21,10 @@ public class Tablero {
     public Tablero(BufferedImage buffer, Graficos graficos, Pacman pacman) {
         this.buffer = buffer;
         this.gBuffer = buffer.createGraphics();
-        this.pacman = pacman;
         this.g = graficos;
     }
 
-    public void printPacmanLetters(int[][] letra, int wordX, int wordY) {
+    public void printPacmanLetter(int[][] letra, int wordX, int wordY) {
         if (buffer != null) {
             for (int i = 0; i < MATRIZ; i++) {
                 for (int j = 0; j < MATRIZ; j++) {
@@ -41,18 +38,35 @@ public class Tablero {
         }
     }
     
-    public void printGameoverLetters(int[][] letra, int wordX, int wordY) {
+    public void printGameoverLetter(int[][] letra, int wordX, int wordY) {
         if (buffer != null) {
             for (int i = 0; i < MATRIZ; i++) {
                 for (int j = 0; j < MATRIZ; j++) {
                     if (letra[i][j] == 1) {
-                        int x = wordX + j * pixelSizeTitle;
-                        int y = wordY + i * pixelSizeTitle;
-                        g.fillRect(x, y, x + pixelSizeTitle, y + pixelSizeTitle, Color.WHITE);
+                        int x = wordX + j * pixelSizeGameover;
+                        int y = wordY + i * pixelSizeGameover;
+                        g.fillRect(x, y, x + pixelSizeGameover, y + pixelSizeGameover, Color.WHITE);
                     }
                 }
             }
         }
+    }
+    
+    public void drawCherry(int x, int y) {
+        int cherrySize = 8;
+        int stickGrossor = 4;
+        //Red circles for cherry
+        g.fillCircle(x, y, cherrySize, Color.RED);
+        g.fillCircle(x + 10, y + 8, cherrySize, Color.RED);
+        g.drawCircle(x + 10, y + 8, cherrySize + 2, Color.BLACK);
+        //Cherry sticks
+        g.drawThickLine(x, y - 3, x + 20, y - 10, stickGrossor, Color.ORANGE);
+        g.drawThickLine(x + 10, y, x + 20, y - 10, stickGrossor, Color.ORANGE);
+    }
+    
+    public void drawVidas(int x, int y) {
+        int pacmanSize = 15;
+        g.fillCircle(x, y, pacmanSize, Color.yellow);
     }
 
     public int[][] printP() {

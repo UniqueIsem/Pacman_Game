@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import main.GamePanel;
 
 public class Graficos extends Canvas {
 
@@ -11,16 +12,18 @@ public class Graficos extends Canvas {
     private final int HEIGHT;
     private BufferedImage buffer;
     private Graphics gBuffer;
+    private GamePanel gp;
 
     // Variables para la traslación
     private int translateX = 0;
     private int translateY = 0;
 
-    public Graficos(int width, int height, BufferedImage buffer) {
+    public Graficos(int width, int height, BufferedImage buffer, GamePanel gamePanel) {
         this.WIDTH = width;
         this.HEIGHT = height;
         this.buffer = buffer;
         this.gBuffer = buffer.createGraphics();
+        this.gp = gamePanel;
         buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
@@ -86,6 +89,21 @@ public class Graficos extends Canvas {
             }
         }
         repaint();
+    }
+
+    public void drawThickLine(int x0, int y0, int x1, int y1, int thickness, Color color) {
+        int dx = x1 - x0;
+        int dy = y1 - y0;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        double unitDx = dx / distance;
+        double unitDy = dy / distance;
+        int halfThickness = thickness / 2;
+
+        for (int i = -halfThickness; i <= halfThickness; i++) {
+            int xOffset = (int) (i * unitDy);
+            int yOffset = (int) (i * unitDx);
+            drawLine(x0 + xOffset, y0 - yOffset, x1 + xOffset, y1 - yOffset, color);
+        }
     }
 
     public void fillCircle(int x0, int y0, int RADIO, Color fillColor) {
@@ -172,16 +190,6 @@ public class Graficos extends Canvas {
         repaint();
     }
 
-    public void drawImage(BufferedImage img, int x, int y) {
-        Graphics g = buffer.getGraphics();
-        g.drawImage(img, x + translateX, y + translateY, null);
-    }
-
-    public void drawImage(BufferedImage img, int x, int y, int width, int height) {
-        Graphics g = buffer.getGraphics();
-        g.drawImage(img, x + translateX, y + translateY, width, height, null);
-    }
-
     private void putPixel(int x, int y, Color color) {
         if (x >= 0 && x < buffer.getWidth() && y >= 0 && y < buffer.getHeight()) {
             buffer.setRGB(x, y, color.getRGB());
@@ -204,9 +212,8 @@ public class Graficos extends Canvas {
     }
 
     public void limpiarBuffer() {
-        Graphics g = buffer.getGraphics();
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
+        gp.drawCharacters();
+
     }
 
 }
