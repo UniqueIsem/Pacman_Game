@@ -9,13 +9,11 @@ import java.util.Random;
 public class Ghost {
 
     private int x = 466;
-    private int y = 251;
+    private int y = 246;
     private final int ghostSize = 13;
     private final int movimiento = 2;
-    private boolean redUsed, pinkUsed, orangeUsed, cyanUsed;
-    private Color[] colors = new Color[4];
     Random random = new Random();
-    int direccion = 0;
+    int direccion;
 
     Laberinto laberinto;
 
@@ -23,26 +21,23 @@ public class Ghost {
         this.laberinto = laberinto;
     }
 
-    public void dibujarFantasma(Graficos g) {
-        //BODY AND EYES
-        colors[0] = Color.red;
-        colors[1] = Color.orange;
-        colors[2] = Color.pink;
-        colors[3] = Color.cyan;
-        if (!redUsed) {
-            g.fillCircle(x, y, ghostSize, colors[0]);
-        } else if (!orangeUsed) {
-            g.fillCircle(x, y, ghostSize, colors[1]);
-        } else if (!pinkUsed) {
-            g.fillCircle(x, y, ghostSize, colors[2]);
-        } else if (!cyanUsed) {
-            g.fillCircle(x, y, ghostSize, colors[3]);
+    public void dibujarFantasma(Graficos g, boolean superPidora) {
+        if (!superPidora) {
+            //Ghost body
+            g.fillCircle(x, y, ghostSize, Color.red);
+            //Ghost eyes
+            g.fillCircle(x - 8, y, 5, Color.white);
+            g.fillCircle(x - 6, y, 3, Color.black);
+            g.fillCircle(x + 8, y, 5, Color.white);
+            g.fillCircle(x + 6, y, 3, Color.black);
+        } else {
+            //Ghost body
+            g.fillCircle(x, y, ghostSize, Color.BLUE);
+            g.drawDottedCircle(x, y, ghostSize + 4, Color.white);
+            //Ghost eyes
+            g.fillCircle(x - 8, y, 5, Color.white);
+            g.fillCircle(x + 8, y, 5, Color.white);
         }
-        g.drawDottedCircle(x, y, ghostSize + 4, Color.white);
-        g.fillCircle(x - 8, y, 5, Color.white);
-        g.fillCircle(x - 6, y, 3, Color.black);
-        g.fillCircle(x + 8, y, 5, Color.white);
-        g.fillCircle(x + 6, y, 3, Color.black);
     }
 
     public void moverFantasma() {
@@ -89,19 +84,36 @@ public class Ghost {
             if (maze[filaPacman][columnaPacman] != 1) {
                 x = 34;
                 x += movimiento;
-            }            
+            }
         }
-        
-        //System.out.println("GHOST X: " + x + " Y: " + y);
+
+        //Actualiza las coordenadas de x,y por si acaso
+        int nuevaX = x;
+        int nuevaY = y;
+        setX(nuevaX);
+        setY(nuevaY);
     }
 
     public void cambioDeDireccion() {
         // Cambio de direccion del fantasma de manera aleatorea
         direccion = random.nextInt(4);
     }
+    
+    public void reiniciarPosicion() {
+        x = 466;
+        y = 246;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
 
     public int getX() {
         return x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public int getY() {

@@ -3,15 +3,24 @@ package characters;
 import componentes.Laberinto;
 import graficos.Graficos;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import javax.swing.Timer;
 
 public class Pacman {
 
     private int x = 466;
     private int y = 316;
+    private int ghostX;
+    private int ghostY;
     private int pacmanSize = 13;
-    private final int movimiento = 2;
+    private int movimiento = 2;
     public boolean[] teclaPresionada = new boolean[4];
+    private boolean enColision = false;
+    private boolean enSuperPildora = false;
+    private int tiempoColision = 1000;
+    private int tiempoSuperPildora = 5000;
     private int vidas = 3;
 
     Laberinto laberinto;
@@ -69,44 +78,81 @@ public class Pacman {
             }
         }
 
-        //Verifica si está sobre un punto para comerlo
-        if (maze[filaPacman][columnaPacman] == 0 || maze[filaPacman][columnaPacman] == 2) {
+        //Verifica si está sobre un punto pequeño o grande para comerlo
+        if (maze[filaPacman][columnaPacman] == 0) {
             laberinto.comerPunto(filaPacman, columnaPacman);
-            //Si comemos un punto grande
-            if (maze[filaPacman][columnaPacman] == 2) {
-                //Implementar comer fantasmas
-            }
+        } else if (maze[filaPacman][columnaPacman] == 2) {
+            laberinto.comerPunto(filaPacman, columnaPacman);
+            movimiento = 4;
+            enSuperPildora = true;
+            tiempoSuperPildora();
         }
+
+        ghostX = ghost.getX();
+        ghostY = ghost.getY();
 
         //Verifica si hay colision con el fantasma
         if (ghostTouch()) {
-            gameOver();
+            isGameOver();
         }
-        //System.out.println("Pacman X: " + x + " Y: " + y);
     }
 
     public boolean ghostTouch() {
-        if (x == ghost.getX() + 4 && y == ghost.getY() + 5) {
-            return true;
-        } else if (x == ghost.getX()) {
-            
+        int xPacman = x;
+        int yPacman = y;
+        int xFantasma = ghost.getX();
+        int yFantasma = ghost.getY();
+        int rangoProximidad = 5;
+
+        // Verificar si el fantasma está dentro del rango de proximidad del Pacman
+        if (Math.abs(xPacman - xFantasma) <= rangoProximidad && Math.abs(yPacman - yFantasma) <= rangoProximidad) {
+            if (!enColision) {
+                if (enSuperPildora) {
+                    ghost.setX(466);
+                    ghost.setY(246);
+                } else if (vidas > 0) {
+                    detenerPacman();
+                    vidas--;
+                }
+                enColision = true;
+                // Iniciar temporizador para restablecer la variable enColision después de cierto tiempo
+                Timer timer = new Timer(tiempoColision, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Restablecer la variable enColision después de tiempoColision milisegundos
+                        enColision = false;
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+                return true;
+            }
+        } else {
+            enColision = false;
         }
         return false;
     }
 
-    public boolean gameOver() {
-        detenerPacman();
-        if (vidas > 0) {
-            System.out.println("colision");
-            vidas--;
-        }
+    public void tiempoSuperPildora() {
+        Timer timer = new Timer(tiempoSuperPildora, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Restablece la variable para quitar superpildora
+                enSuperPildora = false;
+                movimiento = 2;
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    public boolean isGameOver() {
         if (vidas == 0) {
             reiniciarPosicion();
-            //vidas = 3;
+            ghost.reiniciarPosicion();
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public void reiniciarPosicion() {
@@ -121,10 +167,14 @@ public class Pacman {
         teclaPresionada[3] = false;
     }
 
+    public boolean isSuperPildora() {
+        return enSuperPildora;
+    }
+
     public void setVidas(int vidas) {
         this.vidas = vidas;
     }
-    
+
     public int getVidas() {
         return vidas;
     }

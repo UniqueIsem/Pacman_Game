@@ -23,11 +23,12 @@ public final class GamePanel extends JPanel implements KeyListener {
     private final int pacmanMov = 10;
     private final int ghostMov = 10;
     private final int cambioDireccion = 3000;
+    private final int gameOverMessage = 4000;
     private boolean gameOver = false;
 
     Thread thPacman;
     Thread thCambioDireccion;
-    Thread thGhost1, thGhost2, thGhost3, thGhost4;
+    Thread thGhost;
     Thread thGameOver;
 
     Graficos graficos;
@@ -48,8 +49,8 @@ public final class GamePanel extends JPanel implements KeyListener {
         makeGraficos();
         makeMaze();
         makeBoard();
-        makePacman();
         makeGhost();
+        makePacman();
 
         iniciarHilos();
 
@@ -71,12 +72,12 @@ public final class GamePanel extends JPanel implements KeyListener {
         tablero = new Tablero(buffer, graficos, pacman);
     }
 
-    public void makePacman() {
-        pacman = new Pacman(buffer, laberinto, ghost);
-    }
-
     public void makeGhost() {
         ghost = new Ghost(buffer, laberinto);
+    }
+
+    public void makePacman() {
+        pacman = new Pacman(buffer, laberinto, ghost);
     }
 
     private synchronized void iniciarHilos() {
@@ -85,18 +86,13 @@ public final class GamePanel extends JPanel implements KeyListener {
         //Encargado de cambiar la direccion de los fantasmas cada 4 segundos
         thCambioDireccion = new Thread(this::cambioDireccion);
         //Encargado de movimiento de fantasma
-        thGhost1 = new Thread(this::runGhost1);
-//        thGhost2 = new Thread(this::runGhost2);
-//        thGhost3 = new Thread(this::runGhost3);
-//        thGhost4 = new Thread(this::runGhost4);
+        thGhost = new Thread(this::runGhost);
+        //Encargado de imprimir mensaje de GameOver
         thGameOver = new Thread(this::runGameOver);
 
         thPacman.start();
         thCambioDireccion.start();
-        thGhost1.start();
-        //      thGhost2.start();
-        //      thGhost3.start();
-        //       thGhost4.start();
+        thGhost.start();
         thGameOver.start();
     }
 
@@ -104,12 +100,11 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void paintComponent(Graphics g) {
         img = createImage(getWidth(), getHeight());
         gBuffer = img.getGraphics();
+        g.drawImage(buffer, 0, 0, this);
 
-        //Pinta el mapa
+        //Pinta el mapa y caracteres
         drawBackground();
         drawCharacters();
-
-        g.drawImage(buffer, 0, 0, this);
     }
 
     public void runPacman() {
@@ -123,7 +118,7 @@ public final class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    public void runGhost1() {
+    public void runGhost() {
         while (true) {
             ghost.moverFantasma();
             try {
@@ -134,51 +129,20 @@ public final class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    /*public void runGhost2() {
-        while (true) {
-            ghost.moverFantasma();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public void runGhost3() {
-        while (true) {
-            ghost.moverFantasma();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    public void runGhost4() {
-        while (true) {
-            ghost.moverFantasma();
-            try {
-                Thread.sleep(ghostMov);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
     public void runGameOver() {
         while (true) {
-            if (pacman.gameOver()) {
+            if (pacman.isGameOver()) {
                 gameOver = true;
             } else {
                 gameOver = false;
             }
             try {
-                Thread.sleep(4000);
-                if (pacman.getVidas() == 0) {
+                if (gameOver) {
                     pacman.setVidas(3);
                     pacman.detenerPacman();
+                    System.out.println("sleep game over");
                 }
+                Thread.sleep(gameOverMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -238,7 +202,13 @@ public final class GamePanel extends JPanel implements KeyListener {
 
     public void drawCharacters() {
         pacman.dibujarPacman(graficos);
-        ghost.dibujarFantasma(graficos);
+        boolean superPildora = pacman.isSuperPildora();
+        if (!superPildora) {
+            ghost.dibujarFantasma(graficos, false);
+        } else {
+            ghost.dibujarFantasma(graficos, true);
+        }
+        
     }
 
     public void printGameOver() {
