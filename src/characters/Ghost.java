@@ -3,7 +3,6 @@ package characters;
 import componentes.Laberinto;
 import graficos.Graficos;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -11,24 +10,23 @@ public class Ghost {
 
     private int x = 435;
     private int y = 250;
-    private final int ghostSize = 30;
-    private final int movimiento = 10;
+    private final int ghostSize = 13;
+    private final int movimiento = 3;
+    private boolean redUsed, pinkUsed, orangeUsed, cyanUsed;
     Random random = new Random();
-    int direccion;
-    Color color;
-
-    private BufferedImage buffer;
-    private Graphics gBuffer;
-
-    public Ghost(BufferedImage buffer) {
-        this.buffer = buffer;
-        this.gBuffer = buffer.createGraphics();
+    int direccion = 0;
+    
+    Laberinto laberinto;
+    
+    public Ghost(BufferedImage buffer, Laberinto laberinto) {
+        this.laberinto = laberinto;
     }
 
     public void dibujarFantasma(Graficos g, Color c) {
         //BODY AND EYES
-        //g.limpiarBuffer();
-        //g.fillRect(x - 15, y - 12, x + 15, y + 12, c);
+        if (true) {
+            
+        }
         g.fillCircle(x, y, 15, c);
         g.fillCircle(x - 8, y, 5, Color.white);
         g.fillCircle(x - 6, y, 3, Color.black);
@@ -36,7 +34,7 @@ public class Ghost {
         g.fillCircle(x + 6, y, 3, Color.black);
     }
     
-    public void moverFantasma(Laberinto laberinto) {
+    public void moverFantasma() {
         // Coordenadas del fantasma según la matriz del laberinto
         int[][] maze = laberinto.getLaberinto();
         int filaPacman = (y + ghostSize + 1 / 2) / laberinto.getCeldaSize();

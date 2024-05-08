@@ -211,7 +211,4 @@ public class Graficos extends Canvas {
         this.translateY = y;
     }
 
-    public void limpiarBuffer() {
-    }
-
 }

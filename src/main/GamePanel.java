@@ -20,7 +20,8 @@ public final class GamePanel extends JPanel implements KeyListener {
     Graphics gBuffer;
     Image img;
 
-    private int ghostMov = 50;
+    private final int ghostMov = 20;
+    private final int cambioDireccion = 3000;
 
     Thread thPacman;
     Thread thCambioDireccion;
@@ -38,13 +39,14 @@ public final class GamePanel extends JPanel implements KeyListener {
         if (buffer == null) {
             buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
-        this.ghost = new Ghost(buffer);
+        this.ghost = new Ghost(buffer, laberinto);
 
         //Inicializacion de objetos
         makeGraficos();
         makeMaze();
         makeBoard();
         makePacman();
+        makeGhost();
 
         iniciarHilos();
 
@@ -68,6 +70,10 @@ public final class GamePanel extends JPanel implements KeyListener {
 
     public void makePacman() {
         pacman = new Pacman(buffer, laberinto);
+    }
+    
+    public void makeGhost() {
+        ghost = new Ghost(buffer, laberinto);
     }
 
     private synchronized void iniciarHilos() {
@@ -103,7 +109,6 @@ public final class GamePanel extends JPanel implements KeyListener {
 
     public void runPacman() {
         while (true) {
-            //Dibujar pacman
             pacman.moverPacman();
             try {
                 Thread.sleep(30);
@@ -112,13 +117,10 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-
-
+    
     public void runGhost1() {
         while (true) {
-            //Dibujar fantasma
-            //ghost.dibujarFantasma(graficos, Color.red);
-            ghost.moverFantasma(laberinto);
+            ghost.moverFantasma();
             try {
                 Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
@@ -132,7 +134,7 @@ public final class GamePanel extends JPanel implements KeyListener {
         while (true) {
             ghost.cambioDeDireccion();
             try {
-                Thread.sleep(500);
+                Thread.sleep(cambioDireccion);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -178,7 +180,6 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void drawCharacters() {
         pacman.dibujarPacman(graficos);
         ghost.dibujarFantasma(graficos, Color.red);
-
     }
     
     @Override
