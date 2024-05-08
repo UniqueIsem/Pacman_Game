@@ -12,15 +12,13 @@ public class Pacman {
 
     private int x = 466;
     private int y = 316;
-    private int ghostX;
-    private int ghostY;
     private int pacmanSize = 13;
     private int movimiento = 2;
     public boolean[] teclaPresionada = new boolean[4];
     private boolean enColision = false;
     private boolean enSuperPildora = false;
-    private int tiempoColision = 1000;
-    private int tiempoSuperPildora = 5000;
+    private final int tiempoColision = 3000;
+    private final int tiempoSuperPildora = 5000;
     private int vidas = 3;
 
     Laberinto laberinto;
@@ -80,16 +78,13 @@ public class Pacman {
 
         //Verifica si está sobre un punto pequeño o grande para comerlo
         if (maze[filaPacman][columnaPacman] == 0) {
-            laberinto.comerPunto(filaPacman, columnaPacman);
+            laberinto.eatPill(filaPacman, columnaPacman);
         } else if (maze[filaPacman][columnaPacman] == 2) {
-            laberinto.comerPunto(filaPacman, columnaPacman);
+            laberinto.eatPill(filaPacman, columnaPacman);
             movimiento = 4;
             enSuperPildora = true;
             tiempoSuperPildora();
         }
-
-        ghostX = ghost.getX();
-        ghostY = ghost.getY();
 
         //Verifica si hay colision con el fantasma
         if (ghostTouch()) {

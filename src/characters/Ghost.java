@@ -12,6 +12,7 @@ public class Ghost {
     private int y = 246;
     private final int ghostSize = 13;
     private final int movimiento = 2;
+    private boolean detenido = false;
     Random random = new Random();
     int direccion;
 
@@ -41,64 +42,74 @@ public class Ghost {
     }
 
     public void moverFantasma() {
-        // Coordenadas del fantasma según la matriz del laberinto
-        int[][] maze = laberinto.getLaberinto();
-        int filaPacman = (y + ghostSize + 1 / 2) / laberinto.getCeldaSize();
-        int columnaPacman = (x + ghostSize + 1 / 2) / laberinto.getCeldaSize();
+        if (!detenido) {
+            // Coordenadas del fantasma según la matriz del laberinto
+            int[][] maze = laberinto.getLaberinto();
+            int filaPacman = (y + ghostSize + 1 / 2) / laberinto.getCeldaSize();
+            int columnaPacman = (x + ghostSize + 1 / 2) / laberinto.getCeldaSize();
 
-        if (direccion == 0 && filaPacman > 0) { // UP
-            if (maze[filaPacman - 1][columnaPacman] != 1) { //Entra si no detecta colision
-                y -= movimiento;
-            } else { //Cambia de direccion si detecta colision
-                cambioDeDireccion();
+            if (direccion == 0 && filaPacman > 0) { // UP
+                if (maze[filaPacman - 1][columnaPacman] != 1) { //Entra si no detecta colision
+                    y -= movimiento;
+                } else { //Cambia de direccion si detecta colision
+                    cambioDeDireccion();
+                }
+            } else if (direccion == 1 && columnaPacman > 0) { // LEFT
+                if (maze[filaPacman][columnaPacman - 1] != 1) {
+                    x -= movimiento;
+                } else {
+                    cambioDeDireccion();
+                }
+            } else if (direccion == 2 && filaPacman < laberinto.getFilas() - 1) { // DOWN
+                if (maze[filaPacman][columnaPacman] != 1) {
+                    y += movimiento;
+                } else {
+                    y--;
+                    cambioDeDireccion();
+                }
+            } else if (direccion == 3 && columnaPacman < laberinto.getColumnas() - 1) { // RIGHT
+                if (maze[filaPacman][columnaPacman] != 1) {
+                    x += movimiento;
+                } else {
+                    x--;
+                    cambioDeDireccion();
+                }
             }
-        } else if (direccion == 1 && columnaPacman > 0) { // LEFT
-            if (maze[filaPacman][columnaPacman - 1] != 1) {
-                x -= movimiento;
-            } else {
-                cambioDeDireccion();
+
+            //Verifica si llego al borde para aparecer del otro lado
+            if ((x > 30 && x < 33) && (y >= 240 && y <= 260)) {
+                if (maze[filaPacman][columnaPacman - 1] != 1) {
+                    x = 879;
+                    x -= movimiento;
+                }
+            } else if ((x > 880 && x < 888) && (y >= 240 && y <= 260)) {
+                if (maze[filaPacman][columnaPacman] != 1) {
+                    x = 34;
+                    x += movimiento;
+                }
             }
-        } else if (direccion == 2 && filaPacman < laberinto.getFilas() - 1) { // DOWN
-            if (maze[filaPacman][columnaPacman] != 1) {
-                y += movimiento;
-            } else {
-                y--;
-                cambioDeDireccion();
-            }
-        } else if (direccion == 3 && columnaPacman < laberinto.getColumnas() - 1) { // RIGHT
-            if (maze[filaPacman][columnaPacman] != 1) {
-                x += movimiento;
-            } else {
-                x--;
-                cambioDeDireccion();
-            }
+
+            //Actualiza las coordenadas de x,y por si acaso
+            int nuevaX = x;
+            int nuevaY = y;
+            setX(nuevaX);
+            setY(nuevaY);
         }
-
-        //Verifica si llego al borde para aparecer del otro lado
-        if ((x > 30 && x < 33) && (y >= 240 && y <= 260)) {
-            if (maze[filaPacman][columnaPacman - 1] != 1) {
-                x = 879;
-                x -= movimiento;
-            }
-        } else if ((x > 880 && x < 888) && (y >= 240 && y <= 260)) {
-            if (maze[filaPacman][columnaPacman] != 1) {
-                x = 34;
-                x += movimiento;
-            }
-        }
-
-        //Actualiza las coordenadas de x,y por si acaso
-        int nuevaX = x;
-        int nuevaY = y;
-        setX(nuevaX);
-        setY(nuevaY);
     }
 
     public void cambioDeDireccion() {
         // Cambio de direccion del fantasma de manera aleatorea
         direccion = random.nextInt(4);
     }
-    
+
+    public void detenerGhost() {
+        if (!detenido) {
+            detenido = true;
+        } else {
+            detenido = false;
+        }
+    }
+
     public void reiniciarPosicion() {
         x = 466;
         y = 246;

@@ -23,7 +23,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     private final int pacmanMov = 10;
     private final int ghostMov = 10;
     private final int cambioDireccion = 3000;
-    private final int gameOverMessage = 4000;
+    private final int gameOverMessage = 100;
     private boolean gameOver = false;
 
     Thread thPacman;
@@ -141,8 +141,7 @@ public final class GamePanel extends JPanel implements KeyListener {
                 if (gameOver) {
                     pacman.setVidas(3);
                     pacman.detenerPacman();
-                    //pacman
-                    //laberinto.drawPoints(graficos, pacman);
+                    ghost.detenerGhost();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -165,7 +164,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void drawBackground() {
         laberinto.drawBackground(graficos);
         laberinto.drawMaze(graficos);
-        laberinto.drawPoints(graficos, pacman);
+        laberinto.drawPills(graficos);
         drawBoard();
     }
 
@@ -175,6 +174,7 @@ public final class GamePanel extends JPanel implements KeyListener {
         printVidas();
         if (gameOver) {
             printGameOver();
+            laberinto.drawNewPills(graficos);
         }
     }
 
