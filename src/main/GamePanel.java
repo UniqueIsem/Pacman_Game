@@ -20,7 +20,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     Graphics gBuffer;
     Image img;
 
-    private int ghostMov = 80;
+    private int ghostMov = 50;
 
     Thread thPacman;
     Thread thCambioDireccion;
@@ -104,7 +104,6 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void runPacman() {
         while (true) {
             //Dibujar pacman
-            //pacman.dibujarPacman(graficos);
             pacman.moverPacman();
             try {
                 Thread.sleep(30);
@@ -131,7 +130,6 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void cambioDireccion() {
         // Ghost direction changes in 500ms
         while (true) {
-            //ghost.dibujarFantasma(graficos, Color.red);
             ghost.cambioDeDireccion();
             try {
                 Thread.sleep(500);
@@ -142,6 +140,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     }
     
     public void drawBackground() {
+        laberinto.drawBackground(graficos);
         laberinto.drawMaze(graficos);
         laberinto.drawPoints(graficos, pacman);
         drawBoard();

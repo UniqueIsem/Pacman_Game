@@ -212,8 +212,6 @@ public class Graficos extends Canvas {
     }
 
     public void limpiarBuffer() {
-        gp.drawCharacters();
-
     }
 
 }

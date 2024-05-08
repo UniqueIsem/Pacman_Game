@@ -30,8 +30,8 @@ public class Pacman {
 
     public void moverPacman() {
         int[][] maze = laberinto.getLaberinto();
-        int filaPacman = (y + pacmanSize + 1 / 2) / laberinto.getCeldaSize();
-        int columnaPacman = (x + pacmanSize + 1 / 2) / laberinto.getCeldaSize();
+        int filaPacman = (y + pacmanSize + 2 / 2) / laberinto.getCeldaSize();
+        int columnaPacman = (x + pacmanSize + 2 / 2) / laberinto.getCeldaSize();
 
         if (teclaPresionada[0] && filaPacman > 0) { // UP
             if (maze[filaPacman - 1][columnaPacman] != 1) { // Verifica la colisión

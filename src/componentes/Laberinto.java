@@ -22,6 +22,10 @@ public class Laberinto {
         this.buffer = buffer;
         this.gBuffer = buffer.createGraphics();
     }
+    
+    public void drawBackground(Graficos g) {
+        g.fillRect(0, 0, width, height, Color.BLACK);
+    }
 
     public void drawMaze(Graficos g) {
         if (buffer != null) {

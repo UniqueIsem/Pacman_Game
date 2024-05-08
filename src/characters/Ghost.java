@@ -43,20 +43,28 @@ public class Ghost {
         int columnaPacman = (x + ghostSize + 1 / 2) / laberinto.getCeldaSize();
 
         if (direccion == 0 && filaPacman > 0) { // UP
-            if (maze[filaPacman - 1][columnaPacman] != 1) { // Verifica la colisión
+            if (maze[filaPacman - 1][columnaPacman] != 1) { //Entra si no detecta colision
                 y -= movimiento;
+            } else { //Cambia de direccion si detecta colision
+                cambioDeDireccion();
             }
         } else if (direccion == 1 && columnaPacman > 0) { // LEFT
-            if (maze[filaPacman][columnaPacman - 1] != 1) { // Verifica la colisión
+            if (maze[filaPacman][columnaPacman - 1] != 1) { 
                 x -= movimiento;
+            } else {
+                cambioDeDireccion();
             }
         } else if (direccion == 2 && filaPacman < laberinto.getFilas() - 1) { // DOWN
-            if (maze[filaPacman][columnaPacman] != 1) { // Verifica la colisión
+            if (maze[filaPacman][columnaPacman] != 1) { 
                 y += movimiento;
+            } else {
+                cambioDeDireccion();
             }
         } else if (direccion == 3 && columnaPacman < laberinto.getColumnas() - 1) { // RIGHT
-            if (maze[filaPacman][columnaPacman] != 1) { // Verifica la colisión
+            if (maze[filaPacman][columnaPacman] != 1) { 
                 x += movimiento;
+            } else {
+                cambioDeDireccion();
             }
         }
     }
