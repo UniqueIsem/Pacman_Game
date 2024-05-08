@@ -17,19 +17,22 @@ public class Ghost {
     private final int movimiento = 2;
     private boolean detenido = false;
     private final int tiempoDeReaccionDetenido = 10;
+    private int direccion;
     Random random = new Random();
-    int direccion;
+    Color c;
 
     Laberinto laberinto;
 
-    public Ghost(BufferedImage buffer, Laberinto laberinto) {
+    public Ghost(BufferedImage buffer, Laberinto laberinto, Color color) {
         this.laberinto = laberinto;
+        this.c = color;
+        this.direccion = random.nextInt(4);
     }
 
     public void dibujarFantasma(Graficos g, boolean superPidora) {
         if (!superPidora) {
             //Ghost body
-            g.fillCircle(x, y, ghostSize, Color.red);
+            g.fillCircle(x, y, ghostSize, c);
             //Ghost eyes
             g.fillCircle(x - 8, y, 5, Color.white);
             g.fillCircle(x - 6, y, 3, Color.black);

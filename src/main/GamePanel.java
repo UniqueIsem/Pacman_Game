@@ -1,11 +1,11 @@
 package main;
 
 import characters.Ghost;
+import characters.GhostFactory;
 import characters.Pacman;
 import componentes.Laberinto;
 import componentes.Tablero;
 import graficos.Graficos;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -35,7 +35,8 @@ public final class GamePanel extends JPanel implements KeyListener {
     Laberinto laberinto;
     Tablero tablero;
     Pacman pacman;
-    Ghost ghost;
+    GhostFactory ghFactory;
+    Ghost redGhost, orangeGhost, pinkGhost, cyanGhost;
 
     public GamePanel(int w, int h) {
         this.width = w;
@@ -43,13 +44,13 @@ public final class GamePanel extends JPanel implements KeyListener {
         if (buffer == null) {
             buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
-        this.ghost = new Ghost(buffer, laberinto);
 
         //Inicializacion de objetos
         makeGraficos();
         makeMaze();
         makeBoard();
-        makeGhost();
+        makeGhostFactory();
+        makeGhosts();
         makePacman();
 
         iniciarHilos();
@@ -71,13 +72,24 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void makeBoard() {
         tablero = new Tablero(buffer, graficos, pacman);
     }
-
-    public void makeGhost() {
-        ghost = new Ghost(buffer, laberinto);
+    
+    public void makeGhostFactory() {
+        this.ghFactory = new GhostFactory(laberinto);
+    }
+    
+    public void makeGhosts() {
+        Ghost redGhost = ghFactory.createRedGhost(buffer);
+        Ghost orangeGhost = ghFactory.createOrangeGhost(buffer);
+        Ghost pinkGhost = ghFactory.createPinkGhost(buffer);
+        Ghost cyanGhost = ghFactory.createCyanGhost(buffer);
+        this.redGhost = redGhost;
+        this.orangeGhost = orangeGhost;
+        this.pinkGhost = pinkGhost;
+        this.cyanGhost = cyanGhost;
     }
 
     public void makePacman() {
-        pacman = new Pacman(buffer, laberinto, ghost);
+        pacman = new Pacman(buffer, laberinto, redGhost, orangeGhost, pinkGhost, cyanGhost);
     }
 
     private synchronized void iniciarHilos() {
@@ -120,7 +132,10 @@ public final class GamePanel extends JPanel implements KeyListener {
 
     public void runGhost() {
         while (true) {
-            ghost.moverFantasma();
+            redGhost.moverFantasma();
+            orangeGhost.moverFantasma();
+            pinkGhost.moverFantasma();
+            cyanGhost.moverFantasma();
             try {
                 Thread.sleep(ghostMov);
             } catch (InterruptedException e) {
@@ -140,7 +155,10 @@ public final class GamePanel extends JPanel implements KeyListener {
                 if (gameOver) {
                     pacman.setVidas(3);
                     pacman.reiniciarPosicion();
-                    ghost.reiniciarPosicion();
+                    redGhost.reiniciarPosicion();
+                    orangeGhost.reiniciarPosicion();
+                    pinkGhost.reiniciarPosicion();
+                    cyanGhost.reiniciarPosicion();
                 }
                 Thread.sleep(gameOverMessage);
             } catch (InterruptedException e) {
@@ -152,7 +170,10 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void cambioDireccion() {
         // Ghost direction changes in 500ms
         while (true) {
-            ghost.cambioDeDireccion();
+            redGhost.cambioDeDireccion();
+            orangeGhost.cambioDeDireccion();
+            pinkGhost.cambioDeDireccion();
+            cyanGhost.cambioDeDireccion();
             try {
                 Thread.sleep(cambioDireccion);
             } catch (InterruptedException e) {
@@ -205,9 +226,15 @@ public final class GamePanel extends JPanel implements KeyListener {
         pacman.dibujarPacman(graficos);
         boolean superPildora = pacman.isSuperPildora();
         if (!superPildora) {
-            ghost.dibujarFantasma(graficos, false);
+            redGhost.dibujarFantasma(graficos, false);
+            orangeGhost.dibujarFantasma(graficos, false);
+            pinkGhost.dibujarFantasma(graficos, false);
+            cyanGhost.dibujarFantasma(graficos, false);
         } else {
-            ghost.dibujarFantasma(graficos, true);
+            redGhost.dibujarFantasma(graficos, true);
+            orangeGhost.dibujarFantasma(graficos, true);
+            pinkGhost.dibujarFantasma(graficos, true);
+            cyanGhost.dibujarFantasma(graficos, true);
         }
 
     }

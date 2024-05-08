@@ -16,17 +16,33 @@ public class Pacman {
     private int movimiento = 2;
     public boolean[] teclaPresionada = new boolean[4];
     private boolean enColision = false;
+    private Timer colisionTimer;
+    private final int tiempoColision = 500;
     private boolean enSuperPildora = false;
-    private final int tiempoColision = 3000;
     private final int tiempoSuperPildora = 5000;
     private int vidas = 3;
 
     Laberinto laberinto;
-    Ghost ghost;
+    Ghost redGhost, orangeGhost, pinkGhost, cyanGhost;
 
-    public Pacman(BufferedImage buffer, Laberinto laberinto, Ghost ghost) {
+    public Pacman(BufferedImage buffer, Laberinto laberinto, Ghost redGhost, Ghost orangeGhost, Ghost pinkGhost, Ghost cyanGhost) {
         this.laberinto = laberinto;
-        this.ghost = ghost;
+        this.redGhost = redGhost;
+        this.orangeGhost = orangeGhost;
+        this.pinkGhost = pinkGhost;
+        this.cyanGhost = cyanGhost;
+
+        // Inicializar el temporizador de colisión
+        colisionTimer = new Timer(tiempoColision, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Restablecer la variable enColision después de tiempoColision milisegundos
+                enColision = false;
+                vidas--;
+            }
+
+        });
+        colisionTimer.setRepeats(false);
     }
 
     public void dibujarPacman(Graficos g) {
@@ -93,33 +109,88 @@ public class Pacman {
     }
 
     public boolean ghostTouch() {
-        int xPacman = x;
+        int xPacman = x; //Coordenadas de pacman
         int yPacman = y;
-        int xFantasma = ghost.getX();
-        int yFantasma = ghost.getY();
+        //Coordenadas de fantasmas
+        int xRedGhost = redGhost.getX();
+        int yRedGhost = redGhost.getY();
+        int xOrangeGhost = orangeGhost.getX();
+        int yOrangeGhost = orangeGhost.getY();
+        int xPinkGhost = pinkGhost.getX();
+        int yPinkGhost = pinkGhost.getY();
+        int xCyanGhost = cyanGhost.getX();
+        int yCyanGhost = cyanGhost.getY();
         int rangoProximidad = 5;
 
-        // Verificar si el fantasma está dentro del rango de proximidad del Pacman
-        if (Math.abs(xPacman - xFantasma) <= rangoProximidad && Math.abs(yPacman - yFantasma) <= rangoProximidad) {
+        // Verificar si el fantasma rojo está dentro del rango de proximidad del Pacman
+        if (Math.abs(xPacman - xRedGhost) <= rangoProximidad && Math.abs(yPacman - yRedGhost) <= rangoProximidad) {
             if (!enColision) {
-                if (enSuperPildora) {
-                    ghost.setX(466);
-                    ghost.setY(246);
-                } else if (vidas > 0) {
+                if (enSuperPildora) { //comer fantasma con superpildora
+                    redGhost.setX(466);
+                    redGhost.setY(246);
+                } else if (vidas > 0) { //vida menos
+                    System.out.println("colision rojo");
+                    // Iniciar temporizador para restablecer la variable enColision después de cierto tiempo
+                    colisionTimer.start();
                     detenerPacman();
-                    vidas--;
                 }
                 enColision = true;
+
+                return true;
+            }
+        } else {
+            enColision = false;
+        }
+
+        // Verificar si el fantasma naranja está dentro del rango de proximidad del Pacman
+        if (Math.abs(xPacman - xOrangeGhost) <= rangoProximidad && Math.abs(yPacman - yOrangeGhost) <= rangoProximidad) {
+            if (!enColision) {
+                if (enSuperPildora) {
+                    orangeGhost.setX(466);
+                    orangeGhost.setY(246);
+                } else if (vidas > 0) {
+                    detenerPacman();
+                }
+                enColision = true;
+                System.out.println("colision naranja");
                 // Iniciar temporizador para restablecer la variable enColision después de cierto tiempo
-                Timer timer = new Timer(tiempoColision, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Restablecer la variable enColision después de tiempoColision milisegundos
-                        enColision = false;
-                    }
-                });
-                timer.setRepeats(false);
-                timer.start();
+                colisionTimer.start();
+                return true;
+            }
+        } else {
+            enColision = false;
+        }
+        // Verificar si el fantasma rosa está dentro del rango de proximidad del Pacman
+        if (Math.abs(xPacman - xPinkGhost) <= rangoProximidad && Math.abs(yPacman - yPinkGhost) <= rangoProximidad) {
+            if (!enColision) {
+                if (enSuperPildora) {
+                    pinkGhost.setX(466);
+                    pinkGhost.setY(246);
+                } else if (vidas > 0) {
+                    detenerPacman();
+                }
+                enColision = true;
+                System.out.println("colision rosa");
+                // Iniciar temporizador para restablecer la variable enColision después de cierto tiempo
+                colisionTimer.start();
+                return true;
+            }
+        } else {
+            enColision = false;
+        }
+        // Verificar si el fantasma cyan está dentro del rango de proximidad del Pacman
+        if (Math.abs(xPacman - xCyanGhost) <= rangoProximidad && Math.abs(yPacman - yCyanGhost) <= rangoProximidad) {
+            if (!enColision) {
+                if (enSuperPildora) {
+                    cyanGhost.setX(466);
+                    cyanGhost.setY(246);
+                } else if (vidas > 0) {
+                    detenerPacman();
+                }
+                enColision = true;
+                System.out.println("colision cyan");
+                // Iniciar temporizador para restablecer la variable enColision después de cierto tiempo
+                colisionTimer.start();
                 return true;
             }
         } else {
@@ -144,7 +215,10 @@ public class Pacman {
     public boolean isGameOver() {
         if (vidas == 0) {
             detenerPacman();
-            ghost.detenerGhost();
+            redGhost.detenerGhost();
+            orangeGhost.detenerGhost();
+            pinkGhost.detenerGhost();
+            cyanGhost.detenerGhost();
             return true;
         }
         return false;
