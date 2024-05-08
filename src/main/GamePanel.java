@@ -23,10 +23,12 @@ public final class GamePanel extends JPanel implements KeyListener {
     private final int pacmanMov = 10;
     private final int ghostMov = 10;
     private final int cambioDireccion = 3000;
+    private boolean gameOver = false;
 
     Thread thPacman;
     Thread thCambioDireccion;
     Thread thGhost1, thGhost2, thGhost3, thGhost4;
+    Thread thGameOver;
 
     Graficos graficos;
     Laberinto laberinto;
@@ -72,7 +74,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void makePacman() {
         pacman = new Pacman(buffer, laberinto, ghost);
     }
-    
+
     public void makeGhost() {
         ghost = new Ghost(buffer, laberinto);
     }
@@ -87,13 +89,15 @@ public final class GamePanel extends JPanel implements KeyListener {
 //        thGhost2 = new Thread(this::runGhost2);
 //        thGhost3 = new Thread(this::runGhost3);
 //        thGhost4 = new Thread(this::runGhost4);
+        thGameOver = new Thread(this::runGameOver);
 
         thPacman.start();
         thCambioDireccion.start();
         thGhost1.start();
- //      thGhost2.start();
- //      thGhost3.start();
- //       thGhost4.start();
+        //      thGhost2.start();
+        //      thGhost3.start();
+        //       thGhost4.start();
+        thGameOver.start();
     }
 
     @Override
@@ -104,14 +108,13 @@ public final class GamePanel extends JPanel implements KeyListener {
         //Pinta el mapa
         drawBackground();
         drawCharacters();
-        
+
         g.drawImage(buffer, 0, 0, this);
     }
 
     public void runPacman() {
         while (true) {
             pacman.moverPacman();
-            pacman.vidaMenos();
             try {
                 Thread.sleep(pacmanMov);
             } catch (InterruptedException e) {
@@ -119,7 +122,7 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-    
+
     public void runGhost1() {
         while (true) {
             ghost.moverFantasma();
@@ -130,7 +133,7 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-    
+
     /*public void runGhost2() {
         while (true) {
             ghost.moverFantasma();
@@ -163,6 +166,24 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }*/
+    public void runGameOver() {
+        while (true) {
+            if (pacman.gameOver()) {
+                gameOver = true;
+            } else {
+                gameOver = false;
+            }
+            try {
+                Thread.sleep(4000);
+                if (pacman.getVidas() == 0) {
+                    pacman.setVidas(3);
+                    pacman.detenerPacman();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void cambioDireccion() {
         // Ghost direction changes in 500ms
@@ -175,18 +196,21 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
-    
+
     public void drawBackground() {
         laberinto.drawBackground(graficos);
         laberinto.drawMaze(graficos);
         laberinto.drawPoints(graficos, pacman);
         drawBoard();
     }
-    
+
     public void drawBoard() {
         printGameTitle();
         printCherry();
         printVidas();
+        if (gameOver) {
+            printGameOver();
+        }
     }
 
     public void printGameTitle() {
@@ -216,7 +240,19 @@ public final class GamePanel extends JPanel implements KeyListener {
         pacman.dibujarPacman(graficos);
         ghost.dibujarFantasma(graficos);
     }
-    
+
+    public void printGameOver() {
+        tablero.printGameoverLetter(tablero.printG(), 230, 350);
+        tablero.printGameoverLetter(tablero.printA(), 280, 350);
+        tablero.printGameoverLetter(tablero.printM(), 330, 350);
+        tablero.printGameoverLetter(tablero.printE(), 390, 350);
+        tablero.printGameoverLetter(tablero.printO(), 470, 350);
+        tablero.printGameoverLetter(tablero.printV(), 510, 350);
+        tablero.printGameoverLetter(tablero.printE(), 570, 350);
+        tablero.printGameoverLetter(tablero.printR(), 620, 350);
+        tablero.printGameoverLetter(tablero.printSadFace(), 670, 350);
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }

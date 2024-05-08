@@ -167,4 +167,26 @@ public class Tablero {
         };
         return v;
     }
+    
+    public int[][] printR() {
+        int r[][] = {
+            {1, 1, 1, 0, 0},
+            {1, 0, 0, 1, 0},
+            {1, 1, 1, 0, 0},
+            {1, 0, 1, 0, 0},
+            {1, 0, 1, 1, 0}
+        };
+        return r;
+    }
+    
+    public int[][] printSadFace() {
+        int sadFace[][] = {
+            {0, 0, 0, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 0, 0, 0},
+            {0, 1, 1, 1, 0},
+            {1, 0, 0, 0, 1}
+        };
+        return sadFace;
+    }
 }

@@ -8,10 +8,10 @@ import java.util.Random;
 
 public class Ghost {
 
-    private int x = 465;
-    private int y = 250;
+    private int x = 466;
+    private int y = 251;
     private final int ghostSize = 13;
-    private final int movimiento = 1;
+    private final int movimiento = 2;
     private boolean redUsed, pinkUsed, orangeUsed, cyanUsed;
     private Color[] colors = new Color[4];
     Random random = new Random();
@@ -89,8 +89,10 @@ public class Ghost {
             if (maze[filaPacman][columnaPacman] != 1) {
                 x = 34;
                 x += movimiento;
-            }
+            }            
         }
+        
+        //System.out.println("GHOST X: " + x + " Y: " + y);
     }
 
     public void cambioDeDireccion() {
