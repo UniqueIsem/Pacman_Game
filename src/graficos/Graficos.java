@@ -135,6 +135,43 @@ public class Graficos extends Canvas {
         repaint();
     }
 
+    public void drawDottedCircle(int x0, int y0, int radio, Color color) {
+        int x = 0;
+        int y = radio;
+        int d = 3 - 2 * radio;
+        int counter = 0;
+
+        while (x <= y) {
+            if (counter % 10 < 5) { // Controla el patrón de puntos
+                drawDots(x0, y0, x, y, color);
+            }
+            counter++;
+
+            x++;
+            if (d < 0) {
+                d = d + 4 * x + 6;
+            } else {
+                y--;
+                d = d + 4 * (x - y) + 10;
+            }
+            if (counter % 10 < 5) { // Controla el patrón de puntos
+                drawDots(x0, y0, x, y, color);
+            }
+        }
+        repaint();
+    }
+
+    private void drawDots(int xc, int yc, int x, int y, Color c) {
+        putPixel(xc + x, yc + y, c);
+        putPixel(xc - x, yc + y, c);
+        putPixel(xc + x, yc - y, c);
+        putPixel(xc - x, yc - y, c);
+        putPixel(xc + y, yc + x, c);
+        putPixel(xc - y, yc + x, c);
+        putPixel(xc + y, yc - x, c);
+        putPixel(xc - y, yc - x, c);
+    }
+
     public void drawOval(int x0, int y0, int x1, int y1, Color color) {
         int a = Math.abs(x1 - x0) / 2;
         int b = Math.abs(y1 - y0) / 2;

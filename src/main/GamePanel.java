@@ -20,7 +20,8 @@ public final class GamePanel extends JPanel implements KeyListener {
     Graphics gBuffer;
     Image img;
 
-    private final int ghostMov = 20;
+    private final int pacmanMov = 10;
+    private final int ghostMov = 10;
     private final int cambioDireccion = 3000;
 
     Thread thPacman;
@@ -69,7 +70,7 @@ public final class GamePanel extends JPanel implements KeyListener {
     }
 
     public void makePacman() {
-        pacman = new Pacman(buffer, laberinto);
+        pacman = new Pacman(buffer, laberinto, ghost);
     }
     
     public void makeGhost() {
@@ -90,9 +91,9 @@ public final class GamePanel extends JPanel implements KeyListener {
         thPacman.start();
         thCambioDireccion.start();
         thGhost1.start();
-//        thGhost2.start();
-//        thGhost3.start();
-//        thGhost4.start();
+ //      thGhost2.start();
+ //      thGhost3.start();
+ //       thGhost4.start();
     }
 
     @Override
@@ -110,8 +111,9 @@ public final class GamePanel extends JPanel implements KeyListener {
     public void runPacman() {
         while (true) {
             pacman.moverPacman();
+            pacman.vidaMenos();
             try {
-                Thread.sleep(30);
+                Thread.sleep(pacmanMov);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -128,6 +130,39 @@ public final class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
+    
+    /*public void runGhost2() {
+        while (true) {
+            ghost.moverFantasma();
+            try {
+                Thread.sleep(ghostMov);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost3() {
+        while (true) {
+            ghost.moverFantasma();
+            try {
+                Thread.sleep(ghostMov);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void runGhost4() {
+        while (true) {
+            ghost.moverFantasma();
+            try {
+                Thread.sleep(ghostMov);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
 
     public void cambioDireccion() {
         // Ghost direction changes in 500ms
@@ -155,22 +190,22 @@ public final class GamePanel extends JPanel implements KeyListener {
     }
 
     public void printGameTitle() {
-        tablero.printPacmanLetter(tablero.printP(), 350, 515);
-        tablero.printPacmanLetter(tablero.printA(), 380, 515);
-        tablero.printPacmanLetter(tablero.printC(), 410, 515);
-        tablero.printPacmanLetter(tablero.printM(), 440, 515);
-        tablero.printPacmanLetter(tablero.printA(), 470, 515);
-        tablero.printPacmanLetter(tablero.printN(), 500, 515);
+        tablero.printPacmanLetter(tablero.printP(), 380, 515);
+        tablero.printPacmanLetter(tablero.printA(), 410, 515);
+        tablero.printPacmanLetter(tablero.printC(), 440, 515);
+        tablero.printPacmanLetter(tablero.printM(), 470, 515);
+        tablero.printPacmanLetter(tablero.printA(), 500, 515);
+        tablero.printPacmanLetter(tablero.printN(), 530, 515);
         repaint();
     }
 
     public void printCherry() {
-        tablero.drawCherry(800, 530);
-        tablero.drawCherry(750, 530);
+        tablero.drawCherry(850, 530);
+        tablero.drawCherry(900, 530);
     }
 
     public void printVidas() {
-        int posX = 50;
+        int posX = 30;
         for (int i = 0; i < pacman.getVidas(); i++) {
             tablero.drawVidas(posX, 530);
             posX += 50;
@@ -179,7 +214,7 @@ public final class GamePanel extends JPanel implements KeyListener {
 
     public void drawCharacters() {
         pacman.dibujarPacman(graficos);
-        ghost.dibujarFantasma(graficos, Color.red);
+        ghost.dibujarFantasma(graficos);
     }
     
     @Override

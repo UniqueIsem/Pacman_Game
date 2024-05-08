@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 
 public class GameFrame extends JFrame {
 
-    private int width = 886; 
+    private int width = 945; 
     private int height = 590; //548
     GamePanel gPanel;
 
